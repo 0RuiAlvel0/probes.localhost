@@ -1,0 +1,207 @@
+#!/bin/bash
+#Parafernalia, Lda. Rui Alves, 2017
+#This script is to be run as root
+
+clear
+echo "-----------------------------------"
+echo "Starting script. Parafernalia, 2018"
+echo "-----------------------------------"
+date
+
+cd /home/probe/probe_bin
+
+######################################
+#######################SETUP AREA#####
+######################################
+
+#READ probe_config file to set hardware
+source hwconfig.data
+#READ config file to read parameters
+source config.data
+
+app_server="SERVER_"$SERVER_INDEX_IN_USE
+keyw="KEY_1"
+keywl="KEY_0"
+
+
+#######################################
+###################END SETUP AREA######
+#######################################
+
+#Goal is to connect to the internet at all costs
+#Start by checking if we have internet connection
+OUTPUT=""
+ping -q -w 1 -c 1 8.8.8.8 > /dev/null && HAS_CONNECTION=true || HAS_CONNECTION=false
+if [ "$HAS_CONNECTION" = true ] ; then
+
+	echo "We have a connection. Checking if we are online or not."
+	echo "App server: "${!app_server}
+	#We have a connection but are we online or not?
+	RESULT=$(wget ${!app_server}"/checkin.html" -q -O -)
+	if [[ $RESULT == *"CONFIRMED!PARAFERNALIA!"* ]]; then
+
+		echo ""
+		echo "Connected and online. Proceeding with analysis"
+
+		#GATHER AND SEND INFO TO SERVER
+		#GENERAL PROBE INFORMATION
+		echo ""
+		echo "Collecting physical probe information..."
+		#name of interface in use
+                #IFACE=$(route | grep '^default' | grep -o '[^ ]*$' | head -1)
+		#IFACE=$(ip route show default | awk '/default/ {print $5}' | awk '/ / {print$1}')
+		IFACE=$(ip route get 8.8.8.8 | awk '{ print $5; exit }')
+		#mac address
+		MAC=$(cat /sys/class/net/"$IFACE"/address)
+		#server write key
+		if [[ $IFACE == "enp1s0" ]]; then
+			KEY=${!keyw}
+		else
+			KEY=${!keywl}
+		fi
+		#timestamp
+		TS=$(date)
+ 		#system uptime
+                UPTIME=$(uptime)
+
+		OUTPUT=$OUTPUT"~***~IFACE="$IFACE
+		OUTPUT=$OUTPUT"~***~MAC="$MAC
+		OUTPUT=$OUTPUT"~***~KEY="$KEY
+		OUTPUT=$OUTPUT"~***~TS="$TS
+		OUTPUT=$OUTPUT"~***~UPTIME="$UPTIME
+
+		#NETWORK INFORMATION
+		echo ""
+		echo "Collecting network information..."
+		#LAN IP in use
+		#LOCALIP=$(ifconfig "$IFACE" | awk '/inet addr/{print substr($2,6)}')
+		LOCALIP=$(hostname -I)
+		EXTERNALIP=$(curl -s ipinfo.io/ip)
+
+		OUTPUT=$OUTPUT"~***~LOCALIP="$LOCALIP
+		OUTPUT=$OUTPUT"~***~EXTERNALIP="$EXTERNALIP
+
+		#PERFORM PING TEST
+		echo ""
+		echo "Collecting ping test information..."
+		PING_TEST=$(ping "$PING_SERVER" -c "$NUM_PING_TESTS" 2>&1)
+		PING_ERROR="false"
+		PING_ERROR_DESCRIPTION=""
+		PING_PACKETS_TRANSMITTED=""
+		PING_PACKETS_RECEIVED=""
+		PING_PACKET_LOSS=""
+		PING_MIN_TIME=""
+		PING_AVERAGE_TIME=""
+		PING_MAX_TIME=""
+		PING_RESOLVED_IP=""
+		PING_RESOLVED_SERVER=""
+		PING_RESULTS_JSON="{"
+
+		if [[ $PING_TEST == *"ping:"* ]]; then
+			PING_ERROR="true"
+			PING_ERROR_DESCRIPTION=$PING_TEST
+		else
+			AUX=$(grep 'packets transmitted' <<< "$PING_TEST")
+			PING_PACKETS_TRANSMITTED=$(echo "$AUX" | cut -d" " -f1)
+			PING_PACKETS_RECEIVED=$(echo "$AUX" | cut -d"," -f2 | cut -d" " -f2)
+			PING_PACKET_LOSS=$(echo "$AUX" | cut -d"," -f3 | cut -d" " -f2)
+			AUX=$(grep 'PING ' <<< "$PING_TEST")
+			PING_RESOLVED_IP=$(echo "$AUX" | cut -d"(" -f2 | cut -d ")" -f1)
+			AUX=$(grep 'min/avg/max' <<< "$PING_TEST")
+			PING_MIN_TIME=$(echo "$AUX" | cut -d" " -f4 | cut -d"/" -f1)
+			PING_AVERAGE_TIME=$(echo "$AUX" | cut -d" " -f4 | cut -d"/" -f2)
+			PING_MAX_TIME=$(echo "$AUX" | cut -d" " -f4 | cut -d"/" -f3)
+		fi
+
+		OUTPUT=$OUTPUT"~***~PING_ERROR="$PING_ERROR
+		OUTPUT=$OUTPUT"~***~PING_ERROR_DESCRIPTION="$PING_ERROR_DESCRIPTION
+		OUTPUT=$OUTPUT"~***~PING_PACKETS_TRANSMITTED="$PING_PACKETS_TRANSMITTED
+		OUTPUT=$OUTPUT"~***~PING_PACKETS_RECEIVED="$PING_PACKETS_RECEIVED
+		OUTPUT=$OUTPUT"~***~PING_PACKET_LOSS="$PING_PACKET_LOSS
+		OUTPUT=$OUTPUT"~***~PING_MIN_TIME="$PING_MIN_TIME
+		OUTPUT=$OUTPUT"~***~PING_AVERAGE_TIME="$PING_AVERAGE_TIME
+		OUTPUT=$OUTPUT"~***~PING_MAX_TIME="$PING_MAX_TIME
+		OUTPUT=$OUTPUT"~***~PING_RESOLVED_IP="$PING_RESOLVED_IP
+
+		#if no errors, collect data of each test made
+		if [[ $PING_ERROR != "true" ]]; then
+                	COUNTER=1
+                	while read -r line ; do
+                        	BYTES=$(echo $line | cut -d" " -f1)
+                        	FROM=$(echo $line | sed 's/.* from \(.*\):.*/\1/')
+				PING_RESOLVED_SERVER=$FROM
+				TTL=$(echo $line | sed 's/.* ttl=\(.*\) time.*/\1/')
+				TIME=$(echo $line | sed 's/.* time=\(.*\) .*/\1/')
+				TIME_UNITS=$(echo "ms")
+				PING_RESULTS_JSON=$PING_RESULTS_JSON"\"$COUNTER\":{\"BYTES\":$BYTES,\"FROM\":\"$FROM\",\"TTL\":$TTL,\"TIME\":$TIME,\"TIME_UNITS\":\"$TIME_UNITS\"},"
+				let COUNTER=COUNTER+1
+                	done <<< "$(grep 'icmp_seq=' <<< "$PING_TEST")"
+			#Remove the last comma on the json string
+			PING_RESULTS_JSON=${PING_RESULTS_JSON%?}
+		fi
+		PING_RESULTS_JSON=$PING_RESULTS_JSON"}"
+		OUTPUT=$OUTPUT"~***~PING_RESULTS_JSON="$PING_RESULTS_JSON
+		OUTPUT=$OUTPUT"~***~PING_RESOLVED_SERVER="$PING_RESOLVED_SERVER
+
+		#SPEEDTEST
+		echo ""
+		echo "Collecting speed test information..."
+		SPEED_TEST_ERROR="false"
+		SPEED_TEST_ERROR_DESCRIPTION=""
+		#edit speed.js file to update serverID
+		AUX="speedTest({maxTime: 15000, serverId: '$SPEED_TEST_SERVER'});"
+		sed -i "s/var test = .*/var test = $AUX/" speed.js
+
+		SPEED_TEST_RESULTS=$(node speed.js)
+
+		if [[ $SPEED_TEST_RESULTS != *"speeds:"* ]]; then
+                        SPEED_TEST_ERROR="true"
+			SPEED_TEST_ERROR_DESCRIPTION="this is the error:"$SPEED_TEST_RESULTS
+		fi
+
+		OUTPUT=$OUTPUT"~***~SPEED_TEST_ERROR="$SPEED_TEST_ERROR
+		OUTPUT=$OUTPUT"~***~SPEED_TEST_ERROR_DESCRIPTION="$SPEED_TEST_ERROR_DESCRIPTION
+		OUTPUT=$OUTPUT"~***~SPEED_TEST_RESULTS="$SPEED_TEST_RESULTS
+
+		#SEND INFO TO SERVER
+		echo ""
+		echo "Sending data to server."
+		#POST THIS DATA
+		echo $OUTPUT
+		GO=$(curl -s --data "mac=$MAC&write_key=$KEY&o=$OUTPUT" ${!app_server}"/handler/test")
+		echo $GO
+	else
+    		#OK, we have to re-login.
+		#############################################
+		#CASE SPECIFIC INSTRUCTIONS ABOUT LOGIN PAGE#
+		#############################################
+ 		echo "Connected but not online. Dealing with login form..."
+
+		#This is to be done later
+
+		#Call the script again because we should now be past the login page
+		./parafernalia.sh
+	fi
+else
+	#No connection: we have to set it up.
+	#AT THIS MOMENT WE DO NOT CARE ABOUT PPPOE AUTHENTICATION
+	#So this means we have to setup wireless.
+	echo "Taking $INTF down..."
+	#ifconfig eth0 down
+	echo "-------------------------------------"
+	echo "No connection -  we need to set it up"
+	echo "-------------------------------------"
+	sleep 2s
+	echo "Taking $INTF up..."
+	ifconfig "$INTF" up
+
+	#Connect to the network defined in /etc/wpa_supplicant/wpa_supplicant.conf
+	wpa_cli -i wlan0 reconfigure
+
+	#Give it some time
+	echo "Waiting 10s..."
+	sleep 10s
+	#Connection should have been established, call this script again
+	./parafernalia.sh
+	exit 0
+fi

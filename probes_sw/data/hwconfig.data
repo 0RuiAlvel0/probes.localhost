@@ -1,0 +1,20 @@
+#Rui Alves - Parafernalia, Lda. 2018
+#This file is not intended to be changed frequently. It contains settings
+#for the hardware that are not expected to change after the probe is in
+#service. It may also contain some information for other hardware settings
+#to make all the magic possible.
+
+
+#Enter name of wireless interface to be used
+INTF='wlan0'
+
+#To setup wireless connection to the network of choice:
+#sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+#Add the following lines:
+#network={
+#    ssid="HomeOneSSID"
+#    psk="passwordOne"
+#    priority=1
+#    id_str="homeOne"
+#}
+

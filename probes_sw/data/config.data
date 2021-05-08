@@ -1,0 +1,43 @@
+#RuiAlves - Parafernalia, Lda. 2019
+#This file contains settings that can be changed remotely. Do not play 
+#with it!
+
+#Configuration identifier
+CONFIG_ID=166
+
+#Configuration server address
+#probe connects here to check for configuration changes
+SERVER_1=https://app.commacmms.com
+
+#Configuration frequency is fixed, set to 1 minute.
+PING_TEST_FREQ=5
+
+#peed test has its own frequency
+SPEED_TEST_FREQ=5
+
+#Ping test address to use
+PING_SERVER=www.yahoo.com
+NUM_PING_TESTS=3
+
+#Speed test server to use
+SPEED_TEST_SERVER=1849
+
+#Channel test settings
+CHANNEL_TEST_FREQ=15
+TEST_2=YES
+TEST_5=NO
+
+#ENCRYPT THE FOLLOWING INFO
+#WIFI username and password
+WIFIAP=MCtest_AP_name
+WIFIUN=test
+WIFIPW=test
+
+#SERVER WRITE KEYS
+#the same probe may have more than one interface; enter all the write keys for this probe
+#this information is entered the first time we configure the probe
+MAC_0=10:d0:7a:1a:f3:72
+KEY_0=ws3660
+MAC_1=a0:1e:0b:0a:82:18
+KEY_1=agrj7v
+INDEX_IN_USE=0
