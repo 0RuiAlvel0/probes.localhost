@@ -13,7 +13,6 @@
       <div class="row">
         <div class="col-12 text-center">
           <a href="/dashboard"><img src="/assets/images/nemologo.png" class="footerlogoimage"/></a>
-          <br />A product of <a href="http://parafernaliasoftware.com">Parafernalia, Lda.</a>
         </div>
       </div>
     </div>

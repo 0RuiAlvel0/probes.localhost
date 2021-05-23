@@ -75,6 +75,22 @@
     You need to have a device that is running linux and that you have connected to the network
     you would like to to analyze. ssh on to it.
   </li>
+    <li>
+      I assume tthe probes_sw directory is on your local machine and you want to send it over to the
+      machine you're ssh'ed to. From the local machine and if your $PWD is where the probes_sw directory is:
+      scp -r probes_sw remote_user@remote_ip:destination_directory. Usually the destination_directory
+      will be /home/username.
+    </li>
+    <li>
+      On the probe and after you transfer the probes_sw directory, go to probes_sw/data and do nano config.data.
+      Change only SERVER_1=http://the_server_ip
+    </li>
+    <li>
+      <strong>Special notes if you are running the server on a virtual machine (using virtualbox, windows host, ubuntu guest)</strong>
+    </li>
+    <li>
+      Go to probes_sw and do nano config.sh
+    </li>
   </ul>
 </body>
 </html>
