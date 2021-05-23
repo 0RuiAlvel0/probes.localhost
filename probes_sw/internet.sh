@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 WHOAMI=$(whoami)
-cd /home/$WHOAMI/probe_bin
+cd /var/www/probes.localhost/probes_sw
 echo "Starting internet test"
 ping -q -w 1 -c 1 www.google.com > /dev/null && HAS_CONNECTION=true || HAS_CONNECTION=false
 if [ "$HAS_CONNECTION" = false ] ; then

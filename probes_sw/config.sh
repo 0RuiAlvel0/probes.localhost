@@ -82,13 +82,13 @@ if [[ $HAS_ERROR = false && ${!server} != "" ]]; then
 			#add new schedule to temp file
 			touch temp
 			if [[ $NEW_PING_TEST_FREQ != "0" ]]; then
-				echo "*/$NEW_PING_TEST_FREQ * * * * /home/$WHOAMI/probe_bin/ping_test.sh > /home/$WHOAMI/probe_bin/logs/ping.log" >> temp
+				echo "*/$NEW_PING_TEST_FREQ * * * * /var/www/probes.localhost/probes_sw/ping_test.sh > /var/www/probes.localhost/probes_sw/logs/ping.log" >> temp
 			fi
 			if [[ $NEW_SPEED_TEST_FREQ != "0" ]]; then
-				echo "*/$NEW_SPEED_TEST_FREQ * * * * /home/$WHOAMI/probe_bin/speed_test.sh > /home/$WHOAMI/probe_bin/logs/speed.log" >> temp
+				echo "*/$NEW_SPEED_TEST_FREQ * * * * /var/www/probes.localhost/probes_sw/speed_test.sh > /var/www/probes.localhost/probes_sw/logs/speed.log" >> temp
 			fi
 			if [[ $NEW_CHANNEL_TEST_FREQ != "0" ]]; then
-				echo "*/$NEW_CHANNEL_TEST_FREQ * * * * /home/$WHOAMI/probe_bin/channel_test.sh > /home/$WHOAMI/probe_bin/logs/channel.log" >> temp
+				echo "*/$NEW_CHANNEL_TEST_FREQ * * * * /var/probes.localhost/probes_sw/channel_test.sh > /var/www/probes.localhost/probes_sw/logs/channel.log" >> temp
 			fi
 			#install the new crontab
 			crontab temp

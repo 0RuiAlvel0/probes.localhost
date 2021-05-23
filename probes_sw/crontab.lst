@@ -22,4 +22,6 @@
 # m h dom mon dow command
 
 #every minute check configuration (also serves as basic connectivity confirmation)
-*/1 * * * * /var/www/probes.localhost/probes_sw/config.sh > /var/www/probes.localhost/probes_sw/logs/config.log;/var/www/probes.localhost/probes_sw/hw_test.sh > /var/www/probes.localhost/probes_sw/logs/hw.log;/var/www/probes.localhost/probes_sw/internet.sh > /var/www/probes.localhost/probes_sw/logs/internet.log
+*/1 * * * * /var/www/probes.localhost/probes_sw/config.sh > /var/www/probes.localhost/probes_sw/logs/config.log;/var/www/probes.localhost/probes_sw/hw_tests.sh > /var/www/probes.localhost/probes_sw/logs/hw.log;/var/www/probes.localhost/probes_sw/internet.sh > /var/www/probes.localhost/probes_sw/logs/internet.log
+*/5 * * * * /var/www/probes.localhost/probes_sw/ping_test.sh > /var/www/probes.localhost/probes_sw/logs/ping.log
+*/10 * * * * /var/www/probes.localhost/probes_sw/speed_test.sh > /var/www/probes.localhost/probes_sw/logs/speed.log

@@ -3,17 +3,17 @@
 #with it!
 
 #Configuration identifier
-CONFIG_ID=168
+CONFIG_ID=173
 
 #Configuration server address
 #probe connects here to check for configuration changes
 SERVER_1=http://probes.localhost
 
 #Configuration frequency is fixed, set to 1 minute.
-PING_TEST_FREQ=0
+PING_TEST_FREQ=5
 
 #peed test has its own frequency
-SPEED_TEST_FREQ=0
+SPEED_TEST_FREQ=10
 
 #Ping test address to use
 PING_SERVER=www.google.com

@@ -91,7 +91,7 @@
       the probe software. From this point onwards, I will set the system up using this assumption. I had to
       edit the sites-enabled/000-default.conf file to include the following line: <br />
       DocumentRoot /var/www/probes.localhost/probes_sw/web so that when the probe contacts localhost the probe webserver
-      is served. Make sure the probe has curl, jq (sudo aot-get install jq) and apache installed.
+      is served. Make sure the probe has curl, jq (sudo apt-get install jq), nodejs and apache installed.
     </li>
     <li>
       Go to probes_sw/data and do nano config.data. Change the server_1 variable to http://probes.localhost.
