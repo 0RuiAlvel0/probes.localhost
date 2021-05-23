@@ -13,13 +13,13 @@ class Probes extends CI_Controller {
     $data['main_content'] = 'Probes_view';
 	  $this->load->view('includes/Template',$data);
 	}
-	
+
 	function ajax_get_last_test(){
 		$output['error'] = false;
 		$output['error_description'] = '';
-		
+
 		$probe_id = $this->input->post('id');
-		
+
 		//get last speed test results
 		$output['ping_time'] = 'Not available';
 		$output['packets_sent'] = 'Not available';
@@ -43,7 +43,7 @@ class Probes extends CI_Controller {
 			$this->load->model('Probes_tests_ping_details_model');
 			$output['ping_server'] = $this->Probes_tests_ping_details_model->get_ping_server_for_test($last_ping_test->id);
 		}
-		
+
 		$output['speed_time'] = 'Not available';
 		$output['speed_download_span'] = 'Not available';
 		$output['speed_upload_span'] = 'Not available';
@@ -55,7 +55,7 @@ class Probes extends CI_Controller {
 			$output['speed_upload_span'] = $last_speed_test->speeds_upload.' Mbps';
 			$output['speed_server_span'] = $last_speed_test->server_host.' ('.$last_speed_test->server_country.')';
 		}
-		
+
 		$this->load->model('Probes_config_model');
 		if($this->Probes_config_model->probe_config_data($probe_id)->ping_test_freq == 0)
 			$output['ping_test_status'] = 'Ping test disabled';
@@ -65,7 +65,7 @@ class Probes extends CI_Controller {
 			$output['speed_test_status'] = 'Speed test disabled';
 		else
 			$output['speed_test_status'] = 'Speed test every '.$this->Probes_config_model->probe_config_data($probe_id)->speed_test_freq.' m';
-		
+
 		echo json_encode($output);
 	}
 
@@ -80,24 +80,24 @@ class Probes extends CI_Controller {
 		foreach($probes_list as $probes_list_row){
 			$output[$output['num_results']]['id'] = $probes_list_row->id;
 			$output[$output['num_results']]['name'] = $probes_list_row->name;
-			
+
 			//GENERAL HW INFORMATION TO SEND OUT
 			$output[$output['num_results']]['last_hw_test_data'] = 'No HW information yet';
 			$output[$output['num_results']]['type'] = 'Syncing';
-			
+
 			$this->load->model('Probes_hw_tests_model');
 			if($last_hw_test_data = $this->Probes_hw_tests_model->get_last_test($probes_list_row->id)){
-				
+
 				if($last_hw_test_data->iface == 'eth0' || $last_hw_test_data->iface == 'enp1s0')
 					$output[$output['num_results']]['type'] = 'WIRED';
 				else
 					$output[$output['num_results']]['type'] = 'WIRELESS';
-				
+
 				//build the last test info to add to the probes list:
 				$output[$output['num_results']]['last_hw_test_data'] = 'Last check-in <strong>'.date('H:i:s D dS M, Y', $last_hw_test_data->server_time + 13 * 60 * 60).'</strong> ';
 				$output[$output['num_results']]['last_hw_test_data'] .= ' Ext IP <strong>'.$last_hw_test_data->external_ip.'</strong> Loc IP <strong>'.$last_hw_test_data->local_ip.'</strong>';
 			}
-			
+
 			$this->load->model('Probes_config_model');
 			if($this->Probes_config_model->probe_config_data($probes_list_row->id)->ping_test_freq == 0)
 				$output[$output['num_results']]['name'] .= '<br /> Ping test disabled';
@@ -107,7 +107,7 @@ class Probes extends CI_Controller {
 				$output[$output['num_results']]['name'] .= '<br /> Speed test disabled';
 			else
 				$output[$output['num_results']]['name'] .= '<br /> Speed test every '.$this->Probes_config_model->probe_config_data($probes_list_row->id)->speed_test_freq.' m';
-						
+
 			//GENERAL PING TEST INFORMATION TO SEND OUT
 			$output[$output['num_results']]['last_ping_test_data'] = ' | No ping test information yet';
 			$this->load->model('Probes_tests_ping_model');
@@ -115,7 +115,7 @@ class Probes extends CI_Controller {
 				$output[$output['num_results']]['last_ping_test_data'] = ' | Last ping <strong>'.date('H:i:s D dS M, Y', $last_ping_test_data->server_time + 13 * 60 * 60).'</strong>';
 				$output[$output['num_results']]['last_ping_test_data'] .= ' Packet loss <strong>'.$last_ping_test_data->packet_loss.' in '.$last_ping_test_data->num_packets_tx.' tests</strong>';
 			}
-			
+
 			//GENERAL SPEED TEST INFORMATION TO SEND OUT
 			$output[$output['num_results']]['last_speed_test_data'] = ' | No speed test information yet';
 			$this->load->model('Probes_tests_speed_model');
@@ -135,8 +135,8 @@ class Probes extends CI_Controller {
 				else
 					$output[$output['num_results']]['hw_status'] = '<span class="label label-success">Online</span>';
 			}
-			$output[$output['num_results']]['hw_status'] .= ' <br /><small>'.$config_data->server_1.'</small>'; 
-			
+			$output[$output['num_results']]['hw_status'] .= ' <br /><small>'.$config_data->server_1.'</small>';
+
 			//GENERAL INTERNET INFORMATION TO SEND OUT
 			$this->load->model('probes_tests_internet_model');
 			if($internet_data = $this->probes_tests_internet_model->get_last_checkin($probes_list_row->id)){
@@ -215,7 +215,7 @@ class Probes extends CI_Controller {
 		$this->load->model('Probes_model');
 		if($probe_data = $this->Probes_model->probe_data($probe_id)){
 			$output['id'] = $probe_data->id;
-			
+
 			//general probe data
 			$output['w_mac'] = $probe_data->w_mac;
 			$output['wl_mac'] = $probe_data->wl_mac;
@@ -225,25 +225,25 @@ class Probes extends CI_Controller {
 
 			$this->load->model('Probes_config_model');
 			$config_data = $this->Probes_config_model->probe_config_data($output['id']);
-			
+
 			//configuration server data
 			$output['config_id'] = $config_data->id;
 			$output['server_1'] = $config_data->server_1;
-			
+
 			//ping test data
 			$output['ping_server'] = $config_data->ping_server;
 			$output['num_ping_tests'] = $config_data->num_ping_tests;
 			$output['ping_test_freq'] = $config_data->ping_test_freq;
-			
+
 			//Speed test data
 			$output['speed_test_server'] = $config_data->speed_test_server;
 			$output['speed_test_freq'] = $config_data->speed_test_freq;
-			
+
 			//Channel test data
 			$output['channel_test_freq'] = $config_data->channel_test_freq;
 			$output['test_2'] = $config_data->test_2;
 			$output['test_5'] = $config_data->test_5;
-			
+
 			$output['wifiap'] = $config_data->wifiap;
 			$output['wifiun'] = $config_data->wifiun;
 			$output['wifipw'] = $config_data->wifipw;
@@ -267,7 +267,7 @@ class Probes extends CI_Controller {
 			$server_1 = trim($this->input->post('server_1'));
 
 			if($server_1 != ''){
-				$pattern = '/(?:https?:\/\/)?(?:[a-zA-Z0-9.-]+?\.(?:[a-zA-Z])|\d+\.\d+\.\d+\.\d+)/';
+				$pattern = '/(?:http?:\/\/)?(?:[a-zA-Z0-9.-]+?\.(?:[a-zA-Z])|\d+\.\d+\.\d+\.\d+)/';
 				if(preg_match($pattern, $server_1)){
 					$ping_server = $this->input->post('ping_server');
 					$speed_test_server = $this->input->post('speed_test_server');
@@ -323,7 +323,7 @@ class Probes extends CI_Controller {
 											if($wifichannel == '5only'){
 												$new_config['test_5'] = true;
 											}
-												
+
 											$this->load->model('Probes_config_model');
 											$new_config['probe_id'] = $probe_id;
 											$new_config['server_1'] = $server_1;

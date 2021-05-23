@@ -1,5 +1,6 @@
 Starting configuration script
-Wed Aug 14 14:25:01 CST 2019
-Connecting to configuration server (https://app.commacmms.com)
-Server CONFIG_ID: 166 Probe CONFIG_ID: 166
-Probe is in sync. Nothing to do.
+Sun 23 May 2021 01:34:01 PM CST
+Connecting to configuration server (http://probes.localhost)
+Server CONFIG_ID: 168 Probe CONFIG_ID: 168
+Mismatch! Configuration needs update...
+Configuration data has been updated

@@ -10,7 +10,7 @@ clear
 echo "Starting configuration script"
 
 WHOAMI=$(whoami)
-cd /home/$WHOAMI/probe_bin
+cd /var/www/probes.localhost/probes_sw
 
 #Load current configuration values from config.data
 source data/config.data
@@ -36,7 +36,11 @@ for i in 0 1; do
 				HAS_ERROR=false
 				sed -i 's@INDEX_IN_USE=.*@INDEX_IN_USE='$i'@' data/config.data
 				break
+			else
+				printf "ERROR 1: Looks like this probe is not registered MAC: " ${!mac} " Wk: "${!write_key}
 			fi
+		else
+			printf "ERROR 2: Looks like this probe is not registered MAC: " ${!mac} " Wk: "${!write_key}
 		fi
 	fi
 done
