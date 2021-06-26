@@ -4,120 +4,28 @@
 <head>
   <meta charset="utf-8">
   <title>Open NEMO instructions</title>
-  <meta name="description" content="Open source network quality analysis tool">
-  <meta name="author" content="SitePoint">
+  <meta name="description" content="Open source network quality analysis tools">
+  <meta name="author" content="Rui Alves - parafernaliasoftware.com">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <H1>Project description</H1>
-  Open Nemo is a set of software tools split into a server side and network client side part.
+  <H1>Project Description</H1>
+  Open Nemo is a set of software tools split into a server side (SERVER) and network client side part (PROBES).
   The basic idea is to deploy the probe(s) on the network, have them collect
   network quality parameters and then report that information back to the server which
   stores the collected information and displays the current network status.
   <H1>Before you start</H1>
-  It is assumed the user has some experience seting up a linux environment including
-  apache, mysql, php, stuff like that. The installation instructions below start from the
-  point where you already have a apache server running including support for php and
-  mysql. You will also need a way to setup mysql users and databases. I did this on a
-  linux server, I see no reason why this wouldn't work on a windows machine but I have not tried it.
-  The previous comments are for the server side software. The probe side software
-  is for linux based machines only. You can run it on a raspberry pie (although consider
-  any potential caps on network speeds as you will not be able to test the full speed range
-  if the probe cannot use Gb ethernet, for example).<br />
+  It is assumed the user has some experience setting up a linux environment including
+  apache, mysql, php, stuff like that. The installation instructions start from the
+  point where you already have a apache server running including PHP and
+  MySQL. You will also need a way to setup MySQL users and databases.<br/>
+  The server software should run on anything that can run apache, MySQL and PHP (I have only tried on Linux).
+  The probe side software is for linux based machines only. You can run it on a raspberry pie
+  (although consider any potential caps on network speeds as you will not be able to test the full speed range
+  if the probe cannot use Gb Ethernet).<br />
   IMPORTANT ensure you have the mod_rewrite module installed in apache.
-  <H1>Install server side</H1>
-  <ul>
-    <li>
-      <a href="https://github.com/commacmms/probes.localhost" target="_blank">
-      Download the code from github</a>.
-    </li>
-    <li>Place the contents of the downloaded folder to /var/www/probes.localhost or wherever
-    you are going to serve your files from. You can delete the contents of the docs folder. That is
-    only the files for howto you can get online.</li>
-    <li>
-      Open config/database.php, scroll down and set yout localhost, username,
-      password and database. This is what you want it to be, you will setup all of this up
-      later. You can leave that information as is if you would like. The instructions
-      that follow assume you made no changes to the information on this file. Be careful
-      if you are going to run this on a production machine. You will want to change this information
-      in that case.
-    </li>
-    <li>
-      Setup the server database:<br />
-      1) Open a terminal window and enter mysql as root: "sudo mysql"
-      (you will have to create a new user and a new database).<br />
-      2) CREATE DATABASE zodiak_app;
-      3) Now create a new user: CREATE USER 'zodiak_app'@'localhost' IDENTIFIED BY 'your_db_password';<br />
-      4) GRANT ALL PRIVILEGES ON *.* TO 'zodiak_app'@'localhost'; //actually requesting access to all dbs.
-      You may want to limit this to only the database you just created.<br />
-      5) FLUSH PRIVILEGES;<br />
-      6) Copy the provided database to this new database you just created: <br />
-      mysql -u zodiak_app -p -h localhost zodiak_app < /var/www/probes.localhost/zodiak_app.sql<br />
-      Replace /var/www/probes.localhost/zodiak_app.sql with the path where you have the database file.
-    </li>
-    <li>
-      You should now be able to go to https://probes.localhost and should see the login form.
-      <br />
-      <img src="images/login_screen.png" width="400"><br />
-      Enter "info@yourserver.com" as username and "test" as password to login. You should now be taken to the
-      dashboard which looks something like this:<br />
-      <img src="images/dashboard.png" width="800"><br />
-    </li>
-  </ul>
-  <H1>Install probe side</H1>
-  <ul>
-    <li>
-      Navigate to the probes_sw folder. That folder contains the scripts used for the probe to
-      collect network information. This is also how you can make your own scripts
-      to collect your own data.
-    </li>
-  <li>
-    You need to have a device that is running linux and that you have connected to the network
-    you would like to to analyze. ssh on to it.
-  </li>
-    <li>
-      I assume tthe probes_sw directory is on your local machine and you want to send it over to the
-      machine you're ssh'ed to. From the local machine and if your $PWD is where the probes_sw directory is:
-      scp -r probes_sw remote_user@remote_ip:destination_directory. Usually the destination_directory
-      will be /home/username.
-    </li>
-    <li>
-      On the probe and after you transfer the probes_sw directory, go to probes_sw/data and do nano config.data.
-      Change only SERVER_1=http://the_server_ip
-    </li>
-    <li>
-      Notes on the development environment: you can run the server and the probes software on the same machine.
-      For me, I have a ubuntu guest on a windows host machine. The linux machine is running both the server and
-      the probe software. From this point onwards, I will set the system up using this assumption. I had to
-      edit the sites-enabled/000-default.conf file to include the following line: <br />
-      DocumentRoot /var/www/probes.localhost/probes_sw/web so that when the probe contacts localhost the probe webserver
-      is served. Make sure the probe has curl, jq (sudo apt-get install jq), nodejs and apache installed.
-    </li>
-    <li>
-      Go to probes_sw/data and do nano config.data. Change the server_1 variable to http://probes.localhost.
-    </li>
-    <li>
-      Now you need to add the probe on the server. At this moment in time (May 2021), you need to delete the
-      existing probes directly from the database. The delete button doesn't yet work. Go to the database, possibly
-      using mySQL or any other mySQL client.Go to the probes table and delete the two rows there. If you Now
-      refresh the probes list it will say "There's nothing in here."<br />
-      Click the +Probe button and enter the mac address of the wired and wireless interfaces or whichever
-      interface you have available. if you only have one, enter 00:00:00:00:00:00. You can get that information by doing ifconfig -a.<br />
-      You will get something like this: Your wired write key is bekzzs Your wireless write key is ewfqp0.
-      Make a note of that.
-    </li>
-    <li>
-      Edit the probe you just created (click the blue gear button for that probe on the list) and change
-      the configuration server to http://probes.localhost
-    </li>
-    <li>Install a crontab (issue the command crontab -e) with the contents that
-      <a href="https://github.com/commacmms/probes.localhost/issues/1" target="_blank">you can see here</a>.
-    </li>
-    <li>
-      At the end of this long adventure, you should have the server online on the probes lists. that
-      means the probe can successfuly talk to the server. We now need to work on getting the tests running
-      and reporting data.
-    </li>
-  </ul>
+  <H1>Detailed Setup</H1>
+  <H3><a href="server.html">Install server side</a></H3>
+  <H3><a href="probe.html">Install probe side</a></H3>
 </body>
 </html>

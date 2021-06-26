@@ -48,13 +48,15 @@ done
 if [[ $HAS_ERROR = false && ${!server} != "" ]]; then
 	echo "Connecting to configuration server ("${!server}")" 
 	RESULT=$(curl -s --data "mac="${!mac}"&write_key="${!write_key} ${!server}"/handler/version")
-	#echo $RESULT
 	if [[ $RESULT == *"CONFIG_ID="* ]]; then
 		#get server version number
 		SERVER_CONFIG_VERSION=$(grep 'CONFIG_ID=' <<< "$RESULT" | cut -f2 -d"=")
-		echo "Server CONFIG_ID: "$SERVER_CONFIG_VERSION" Probe CONFIG_ID: "$CONFIG_ID
+		$SERVER_CONFIG_VERSION=`echo $SERVER_CONFIG_VERSION | xargs`
+                $CONFIG_ID=`echo $CONFIG_ID | xargs`
+		echo "Server CONFIG_ID: "$SERVER_CONFIG_VERSION
+		echo "Probe CONFIG_ID:  "$CONFIG_ID
 		#server replied OK with version number; compare with the version on the file
-		if [[ $SERVER_CONFIG_VERSION != $CONFIG_ID ]]; then
+		if [[ "$SERVER_CONFIG_VERSION" != "$CONFIG_ID" ]]; then
 			echo "Mismatch! Configuration needs update..."
 			#get configuration variables from server and update config.data file
 			CONFIG=$(curl -s --data "mac="${!mac}"&write_key="${!write_key} ${!server}"/handler/update")

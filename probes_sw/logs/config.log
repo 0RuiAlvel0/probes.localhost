@@ -1,6 +1,7 @@
 Starting configuration script
-Sun 23 May 2021 07:09:01 PM CST
+Sat 26 Jun 2021 04:06:01 PM CST
 Connecting to configuration server (http://probes.localhost)
-Server CONFIG_ID: 173 Probe CONFIG_ID: 173
+Server CONFIG_ID: 173
+Probe CONFIG_ID:  173
 Mismatch! Configuration needs update...
 Configuration data has been updated

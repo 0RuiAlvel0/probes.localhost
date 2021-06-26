@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Open NEMO instructions - Server</title>
+  <meta name="description" content="Open source network quality analysis tool">
+  <meta name="author" content="Rui Alves - parafernaliasoftware.com">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <H1>Install server side</H1>
+  <a href="index.html">Back to main</a> | <a href="probe.html">Probes setup</a>
+  <ul>
+    <li>
+      <a href="https://github.com/commacmms/probes.localhost" target="_blank">
+      Download the code from github</a>.
+    </li>
+    <li>Place the contents of the downloaded folder to /var/www/probes.localhost or wherever
+    you are going to serve your files from. You can delete the contents of the docs folder. That is
+    only the files for howto you can get online.</li>
+    <li>
+      Open config/database.php, scroll down and set yout localhost, username,
+      password and database. This is what you want it to be, you will setup all of this up
+      later. You can leave that information as is if you would like. The instructions
+      that follow assume you made no changes to the information on this file. Be careful
+      if you are going to run this on a production machine. You will want to change this information
+      in that case.
+    </li>
+    <li>
+      Setup the server database:<br />
+      1) Open a terminal window and enter mysql as root: "sudo mysql"
+      (you will have to create a new user and a new database).<br />
+      2) CREATE DATABASE zodiak_app;
+      3) Now create a new user: CREATE USER 'zodiak_app'@'localhost' IDENTIFIED BY 'your_db_password';<br />
+      4) GRANT ALL PRIVILEGES ON *.* TO 'zodiak_app'@'localhost'; //actually requesting access to all dbs.
+      You may want to limit this to only the database you just created.<br />
+      5) FLUSH PRIVILEGES;<br />
+      6) Copy the provided database to this new database you just created: <br />
+      mysql -u zodiak_app -p -h localhost zodiak_app < /var/www/probes.localhost/zodiak_app.sql<br />
+      Replace /var/www/probes.localhost/zodiak_app.sql with the path where you have the database file.
+    </li>
+    <li>
+      You should now be able to go to https://probes.localhost and should see the login form.
+      <br />
+      <img src="images/login_screen.png" width="400"><br />
+      Enter "info@yourserver.com" as username and "test" as password to login. You should now be taken to the
+      dashboard which looks something like this:<br />
+      <img src="images/dashboard.png" width="800"><br />
+    </li>
+  </ul>
+</body>
+</html>
