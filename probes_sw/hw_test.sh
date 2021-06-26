@@ -2,7 +2,7 @@
 #Runs every 1 minutes
 clear
 WHOAMI=$(whoami)
-cd /home/$WHOAMI/probe_bin
+cd /var/www/probes.localhost/probes_sw
 echo "Starting HW test"
 source data/config.data
 NO_HTTP_SERVER_1=$(echo $SERVER_1 | sed 's/https\?:\/\///')

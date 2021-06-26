@@ -3,7 +3,7 @@
 #with it!
 
 #Configuration identifier
-CONFIG_ID=173
+CONFIG_ID=177
 
 #Configuration server address
 #probe connects here to check for configuration changes
@@ -16,7 +16,7 @@ PING_TEST_FREQ=5
 SPEED_TEST_FREQ=10
 
 #Ping test address to use
-PING_SERVER=www.google.com
+PING_SERVER=www.reddit.com
 NUM_PING_TESTS=2
 
 #Speed test server to use

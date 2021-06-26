@@ -46,13 +46,13 @@ for i in 0 1; do
 done
 
 if [[ $HAS_ERROR = false && ${!server} != "" ]]; then
-	echo "Connecting to configuration server ("${!server}")" 
+	echo "Connecting to configuration server ("${!server}")"
 	RESULT=$(curl -s --data "mac="${!mac}"&write_key="${!write_key} ${!server}"/handler/version")
 	if [[ $RESULT == *"CONFIG_ID="* ]]; then
 		#get server version number
 		SERVER_CONFIG_VERSION=$(grep 'CONFIG_ID=' <<< "$RESULT" | cut -f2 -d"=")
-		$SERVER_CONFIG_VERSION=`echo $SERVER_CONFIG_VERSION | xargs`
-                $CONFIG_ID=`echo $CONFIG_ID | xargs`
+		SERVER_CONFIG_VERSION="${SERVER_CONFIG_VERSION:0:-1}"
+    CONFIG_ID=`echo $CONFIG_ID | xargs`
 		echo "Server CONFIG_ID: "$SERVER_CONFIG_VERSION
 		echo "Probe CONFIG_ID:  "$CONFIG_ID
 		#server replied OK with version number; compare with the version on the file
