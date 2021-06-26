@@ -9,23 +9,25 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <H1>Project Description</H1>
+  <H1>Project description</H1>
   Open Nemo is a set of software tools split into a server side (SERVER) and network client side part (PROBES).
   The basic idea is to deploy the probe(s) on the network, have them collect
   network quality parameters and then report that information back to the server which
   stores the collected information and displays the current network status.
   <H1>Before you start</H1>
-  It is assumed the user has some experience setting up a linux environment including
+  <P>It is assumed the user has some experience setting up a linux environment including
   apache, mysql, php, stuff like that. The installation instructions start from the
   point where you already have a apache server running including PHP and
-  MySQL. You will also need a way to setup MySQL users and databases.<br/>
-  The server software should run on anything that can run apache, MySQL and PHP (I have only tried on Linux).
+  MySQL. You will also need a way to setup MySQL users and databases.</P>
+  <P>The server software should run on anything that can run apache, MySQL and PHP (I have only tried on Linux).
   The probe side software is for linux based machines only. You can run it on a raspberry pie
   (although consider any potential caps on network speeds as you will not be able to test the full speed range
-  if the probe cannot use Gb Ethernet).<br />
-  IMPORTANT ensure you have the mod_rewrite module installed in apache.
+  if the probe cannot use Gb Ethernet).</P>
+  <strong>IMPORTANT</strong> ensure you have the mod_rewrite module installed in apache.
   <H1>Detailed Setup</H1>
-  <H3><a href="server.html">Install server side</a></H3>
-  <H3><a href="probe.html">Install probe side</a></H3>
+  <ul>
+    <li><a href="server.html">Install server side</a></li>
+    <li><a href="probe.html">Install probe side</a></li>
+  </ul>
 </body>
 </html>
