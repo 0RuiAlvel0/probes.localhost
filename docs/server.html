@@ -27,7 +27,7 @@
     change this information in that case.</P>
 
     <P>
-      STEP 4: Setup the server database:<br />
+      STEP 4: Setup the server database<br />
       1) Open a terminal window and enter mysql as root: "sudo mysql"
       (you will have to create a new user and a new database).<br />
       2) CREATE DATABASE zodiak_app;
@@ -35,18 +35,18 @@
       4) GRANT ALL PRIVILEGES ON *.* TO 'zodiak_app'@'localhost'; //actually requesting access to all dbs.
       You may want to limit this to only the database you just created.<br />
       5) FLUSH PRIVILEGES;<br />
-      6) Copy the provided database to this new database you just created: <br />
-      mysql -u zodiak_app -p -h localhost zodiak_app < /var/www/probes.localhost/zodiak_app.sql<br />
-      Replace /var/www/probes.localhost/zodiak_app.sql with the path where you have the database file.
+      6) Copy the provided database to this new database you just created:
+      mysql -u zodiak_app -p -h localhost zodiak_app < /var/www/probes.localhost/zodiak_app.sql
+      - Replace /var/www/probes.localhost/zodiak_app.sql with the path where you have the database file.
     </P>
 
     <P>
       You should now be able to go to https://probes.localhost and should see the login form.
       <br />
-      <img src="images/login_screen.png" width="400"><br />
+      <center><img src="images/login_screen.png" width="400"></center><br />
       Enter "info@yourserver.com" as username and "test" as password to login. You should now be taken to the
       dashboard which looks something like this:<br />
-      <img src="images/dashboard.png" width="400"><br />
+      <center><img src="images/dashboard.png" width="400"></center><br />
     </P>
     <center><a href="index.html">Back to main</a> | <a href="probe.html">Probes setup</a></center>
 </body>

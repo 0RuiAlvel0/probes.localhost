@@ -11,31 +11,31 @@
 <body>
   <center><a href="index.html">Back to main</a> | <a href="server.html">Server setup</a></center>
   <H1>Install probe side</H1>
-    <P>Step 1: Navigate to the probes_sw folder. That folder contains the scripts used for the probe to
+    <P>STEP 1: Navigate to the probes_sw folder. That folder contains the scripts used for the probe to
       collect network information. This is also how you can make your own scripts
       to collect your own data.</P>
 
-  <P>You need to have a device that is running linux and that you have connected to the network
+  <P>STEP 2: You need to have a device that is running linux and that you have connected to the network
     you would like to to analyze. ssh on to it.</P>
 
-    <P>I assume tthe probes_sw directory is on your local machine and you want to send it over to the
+    <P>STEP 3: I assume tthe probes_sw directory is on your local machine and you want to send it over to the
       machine you're ssh'ed to. From the local machine and if your $PWD is where the probes_sw directory is:
       scp -r probes_sw remote_user@remote_ip:destination_directory. Usually the destination_directory
       will be /home/username.</P>
 
-    <P>On the probe and after you transfer the probes_sw directory, go to probes_sw/data and do nano config.data.
+    <P>STEP 4: On the probe and after you transfer the probes_sw directory, go to probes_sw/data and do nano config.data.
       Change only SERVER_1=http://the_server_ip</P>
 
-    <P>Notes on the development environment: you can run the server and the probes software on the same machine.
+    <P>STEP 5: Notes on the development environment: you can run the server and the probes software on the same machine.
       For me, I have a ubuntu guest on a windows host machine. The linux machine is running both the server and
       the probe software. From this point onwards, I will set the system up using this assumption. I had to
       edit the sites-enabled/000-default.conf file to include the following line: <br />
       DocumentRoot /var/www/probes.localhost/probes_sw/web so that when the probe contacts localhost the probe webserver
       is served. Make sure the probe has curl, jq (sudo apt-get install jq), nodejs and apache installed.</P>
 
-    <P>Go to probes_sw/data and do nano config.data. Change the server_1 variable to http://probes.localhost.</P>
+    <P>STEP 6: Go to probes_sw/data and do nano config.data. Change the server_1 variable to http://probes.localhost.</P>
 
-    <P>Now you need to add the probe on the server. At this moment in time (May 2021), you need to delete the
+    <P>STEP 7: Now you need to add the probe on the server. At this moment in time (May 2021), you need to delete the
       existing probes directly from the database. The delete button doesn't yet work. Go to the database, possibly
       using mySQL or any other mySQL client.Go to the probes table and delete the two rows there. If you Now
       refresh the probes list it will say "There's nothing in here."<br />
@@ -44,16 +44,16 @@
       You will get something like this: Your wired write key is bekzzs Your wireless write key is ewfqp0.
       Make a note of that.</P>
 
-    <P>Edit the probe you just created (click the blue gear button for that probe on the list) and change
+    <P>STEP 8: Edit the probe you just created (click the blue gear button for that probe on the list) and change
       the configuration server to http://probes.localhost</P>
 
-    <P>Install a crontab (issue the command crontab -e) with the contents that
+    <P>STEP 9: Install a crontab (issue the command crontab -e) with the contents that
       <a href="https://github.com/commacmms/probes.localhost/issues/1" target="_blank">you can see here</a>.</P>
 
-    <P>At the end of this long adventure, you should have the server online on the probes lists. that
+    <P>STEP 10: At the end of this long adventure, you should have the server online on the probes lists. that
       means the probe can successfuly talk to the server. We now need to work on getting the tests running
       and reporting data.</P>
-      
-  <center><a href="index.html">Back to main</a> | <a href="probe.html">Probes setup</a></center>
+
+  <center><a href="index.html">Back to main</a> | <a href="server.html">Server setup</a></center>
 </body>
 </html>
